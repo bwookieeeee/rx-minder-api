@@ -1,0 +1,19 @@
+{
+  "users": [
+    {
+      "id": "uuid-somethingrather",
+      "username": "username1",
+      "passwdHash": "hashedPassword",
+      "apiKey": "apiKey",
+      "email": "email@example.com",
+      "firstName": "user",
+      "lastName": "name",
+      "linkedRxs": [
+        "0001"
+      ],
+      "linkedReminders": [
+        "1001"
+      ]
+    }
+  ]
+}

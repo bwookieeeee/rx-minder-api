@@ -1,0 +1,17 @@
+{
+  "scrips": [
+    {
+      "id": "0001",
+      "rxNum": "abcdef",
+      "name": "medicine",
+      "strength": "10u",
+      "stock": 30.00,
+      "instructions": "take one by mouth as needed",
+      "warnings:": [
+        "dizzy",
+        "heavy",
+        "withFood"
+      ]
+    }
+  ]
+}
