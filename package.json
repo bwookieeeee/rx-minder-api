@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/bwookieeeee/rx-minder-api/issues"
   },
-  "homepage": "https://github.com/bwookieeeee/rx-minder-api#readme"
+  "homepage": "https://github.com/bwookieeeee/rx-minder-api#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "uuid": "^8.3.2"
+  }
 }
