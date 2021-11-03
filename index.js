@@ -1,5 +1,5 @@
 const express = require("express");
-// const uuid, { v4 } = require("uuid");
+const uuid = require("uuid");
 
 
 const app = express();
@@ -11,7 +11,30 @@ const scrips = require("./dummy/scrips.json");
 const reminders = require("./dummy/reminders.json");
 
 app.get("/", (req, res) => {
-  res.send(204);
+  const { version } = require("./package.json");
+  res.status(200).send({version: version})
+})
+
+app.get("/user", (req, res) => {
+  const user = users.users.find(usr => usr.username === req.body.username);
+  if (user) {
+    res.send(user);
+  } else {
+    res.sendStatus(404);
+  }
+})
+
+app.post("/user", (req, res) => {
+  try {
+    let user = req.body;
+    user.id = uuid.v4();
+    user.apiKey = uuid.v4();
+    users.users.push(user)
+    res.status(201).send(user)
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err);
+  }
 })
 
 app.listen(3000);
