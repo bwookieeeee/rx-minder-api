@@ -5,19 +5,14 @@ const uuid = require("uuid");
 // This is a temporary solution until a database is added:
 let users = require("../dummy/users.json").users;
 
-router.get("/", (req, res) => {
-  res.sendStatus(405);
-})
-router.patch("/", (req, res) => {
-  res.sendStatus(405);
-})
-router.delete("/", (req, res) => {
-  res.sendStatus(405);
-})
+router.get("/", (req, res) => { res.sendStatus(405) })
+router.patch("/", (req, res) => { res.sendStatus(405) })
+router.delete("/", (req, res) => { res.sendStatus(405) })
 
 router.get("/:username", (req, res) => {
-  console.debug(`GET /users/${req.params.username}`)
-  const user = users.find(usr => usr.username === req.params.username);
+  const { username } = req.params;
+  console.debug(`GET /users/${username}`)
+  const user = users.find(usr => usr.username === username);
   if (user) {
     res.status(200).send(user);
   } else {
@@ -44,20 +39,22 @@ router.post("/", (req, res) => {
 })
 
 router.patch("/:username", (req, res) => {
-  console.debug(`PATCH /users/${req.params.username}`)
-  let target = users.find(usr => usr.username === req.params.username);
+  const { username } = req.params;
+  const { passwdHash, email, firstName, lastName, linkedReminders, linkedRxs } = req.body;
+  console.debug(`PATCH /users/${username}`)
+  let target = users.find(usr => usr.username === username);
   if (target) {
     const targetIdx = users.indexOf(target);
     const updated = {
       id: target.id,
       username: target.username,
-      passwdHash: req.body.passwdHash ? req.body.passwdHash : target.passwdHash,
+      passwdHash: passwdHash ? passwdHash : target.passwdHash,
       apiKey: target.apiKey,
-      email: req.body.email ? req.body.email : target.email,
-      firstName: req.body.firstName ? req.body.firstName : target.firstName,
-      lastName: req.body.lastName ? req.body.lastName : target.lastName,
-      linkedRxs: req.body.linkedRxs ? req.body.linkedRxs : target.linkedRxs,
-      linkedReminders: req.body.linkedReminders ? req.body.linkedReminders : target.linkedReminders
+      email: email ? email : target.email,
+      firstName: firstName ? firstName : target.firstName,
+      lastName: lastName ? lastName : target.lastName,
+      linkedRxs: linkedRxs ? linkedRxs : target.linkedRxs,
+      linkedReminders: linkedReminders ? linkedReminders : target.linkedReminders
     }
 
     users[targetIdx] = updated;
@@ -68,8 +65,9 @@ router.patch("/:username", (req, res) => {
 })
 
 router.delete("/:username", (req, res) => {
-  console.debug(`DELETE /users/${req.params.username}`)
-  const target = users.find(usr => usr.username === req.params.username);
+  const { username } = req.params;
+  console.debug(`DELETE /users/${username}`)
+  const target = users.find(usr => usr.username === username);
   if (target) {
     users.splice(users.indexOf(target), 1);
     res.sendStatus(204);

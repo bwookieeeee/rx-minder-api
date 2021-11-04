@@ -8,9 +8,10 @@ router.patch("/", (req, res) => { res.sendStatus(405) });
 router.delete("/", (req, res) => { res.sendStatus(405) });
 
 router.get("/:id", (req, res) => {
-  console.debug(`GET /scrips/${req.params.id}`);
+  const { id } = req.params;
+  console.debug(`GET /scrips/${id}`);
 
-  const target = scrips.find(scr => scr.id === req.params.id);
+  const target = scrips.find(scr => scr.id === id);
   if (target) {
     res.status(200).send(target);
   } else {
@@ -22,7 +23,7 @@ router.post("/", (req, res) => {
   console.debug(`POST /scrips`);
 
   try {
-    if (scrips.find(scr => scr.rxNum === req.body.rxNum)) {
+    if (scrips.find(scr => scr.rxNum === rxNum)) {
       res.status(400).send({ error: "Scrip already exists" });
     } else {
       let scrip = req.body;
@@ -37,19 +38,21 @@ router.post("/", (req, res) => {
 })
 
 router.patch("/:id", (req, res) => {
-  console.debug(`PATCH /scrips/${req.params.id}`);
+  const { id } = req.params;
+  const { name, strength, stock, instructions, warnings } = req.body;
+  console.debug(`PATCH /scrips/${id}`);
 
-  let target = scrips.find(scr => scr.id === req.params.id);
+  let target = scrips.find(scr => scr.id === id);
   if (target) {
     const targetIdx = scrips.indexOf(target);
     const updated = {
       id: target.id,
       rxNum: target.rxNum,
-      name: req.body.name ? req.body.name : target.name,
-      strength: req.body.strength ? req.body.strength : target.strength,
-      stock: req.body.stock ? req.body.stock : target.stock,
-      instructions: req.body.instructions ? req.body.instructions : target.instructions,
-      warnings: req.body.warnings ? req.body.warnings : target.warnings
+      name: name ? name : target.name,
+      strength: strength ? strength : target.strength,
+      stock: stock ? stock : target.stock,
+      instructions: instructions ? instructions : target.instructions,
+      warnings: warnings ? warnings : target.warnings
     }
     scrips[targetIdx] = updated;
     res.status(200).send(updated);
@@ -59,7 +62,8 @@ router.patch("/:id", (req, res) => {
 })
 
 router.delete("/:id", (req, res) => {
-  console.debug(`DELETE /scrips/${req.params.id}`);
+  const { id } = req.params;
+  console.debug(`DELETE /scrips/${id}`);
   const target = scrips.find(scr => scr.id === scr.id);
   if (target) {
     scrips.splice(scrips.indexOf(target), 1);
