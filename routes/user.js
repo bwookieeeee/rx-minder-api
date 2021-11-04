@@ -6,11 +6,17 @@ const uuid = require("uuid");
 let users = require("../dummy/users.json").users;
 
 router.get("/", (req, res) => {
-  res.sendStatus(401);
+  res.sendStatus(405);
+})
+router.patch("/", (req, res) => {
+  res.sendStatus(405);
+})
+router.delete("/", (req, res) => {
+  res.sendStatus(405);
 })
 
 router.get("/:username", (req, res) => {
-  console.debug(`GET /users`)
+  console.debug(`GET /users/${req.params.username}`)
   const user = users.find(usr => usr.username === req.params.username);
   if (user) {
     res.status(200).send(user);
@@ -37,6 +43,29 @@ router.post("/", (req, res) => {
   }
 })
 
+router.patch("/:username", (req, res) => {
+  console.debug(`PATCH /users/${req.params.username}`)
+  let target = users.find(usr => usr.username === req.params.username);
+  if (target) {
+    const targetIdx = users.indexOf(target);
+    const updated = {
+      id: target.id,
+      username: target.username,
+      passwdHash: req.body.passwdHash ? req.body.passwdHash : target.passwdHash,
+      apiKey: target.apiKey,
+      email: req.body.email ? req.body.email : target.email,
+      firstName: req.body.firstName ? req.body.firstName : target.firstName,
+      lastName: req.body.lastName ? req.body.lastName : target.lastName,
+      linkedRxs: req.body.linkedRxs ? req.body.linkedRxs : target.linkedRxs,
+      linkedReminders: req.body.linkedReminders ? req.body.linkedReminders : target.linkedReminders
+    }
+
+    users[targetIdx] = updated;
+    res.status(200).send(updated);
+  } else {
+    res.sendStatus(404);
+  }
+})
 
 
 module.exports = router;
