@@ -67,5 +67,15 @@ router.patch("/:username", (req, res) => {
   }
 })
 
+router.delete("/:username", (req, res) => {
+  console.debug(`DELETE /users/${req.params.username}`)
+  const target = users.find(usr => usr.username === req.params.username);
+  if (target) {
+    users.splice(users.indexOf(target), 1);
+    res.sendStatus(204);
+  } else {
+    res.sendStatus(404);
+  }
+})
 
 module.exports = router;
