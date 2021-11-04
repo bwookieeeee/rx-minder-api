@@ -6,8 +6,12 @@ const uuid = require("uuid");
 let users = require("../dummy/users.json").users;
 
 router.get("/", (req, res) => {
-  console.debug(`GET /user`)
-  const user = users.find(usr => usr.username === req.body.username);
+  res.sendStatus(401);
+})
+
+router.get("/:username", (req, res) => {
+  console.debug(`GET /users`)
+  const user = users.find(usr => usr.username === req.params.username);
   if (user) {
     res.status(200).send(user);
   } else {
@@ -16,7 +20,7 @@ router.get("/", (req, res) => {
 })
 
 router.post("/", (req, res) => {
-  console.debug(`POST /user`);
+  console.debug(`POST /users`);
   try {
     if (users.find(usr => usr.username === req.body.username)) {
       res.status(400).send({ error: "User already exists" });
@@ -32,5 +36,7 @@ router.post("/", (req, res) => {
     res.status(500).send(err);
   }
 })
+
+
 
 module.exports = router;

@@ -9,8 +9,8 @@ app.get("/", (req, res) => {
   res.status(200).send({ version: version })
 })
 
-app.use("/user", require("./routes/user"));
-app.use("/scrip", require("./routes/scrip"));
-app.use("/reminder", require("./routes/reminder"));
+app.use("/users", require("./routes/user"));
+app.use("/scrips", require("./routes/scrip"));
+app.use("/reminders", require("./routes/reminder"));
 
 app.listen(3000);
