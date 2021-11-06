@@ -9,10 +9,22 @@ const pool = new Pool({
   host: "127.0.0.1",
 })
 
+/*
+ *  Send a 405 on /users on GET, PATCH, DELETE since we don't want to do this
+ *  to all our users.
+ */
 router.get("/", (req, res) => { res.sendStatus(405) })
 router.patch("/", (req, res) => { res.sendStatus(405) })
 router.delete("/", (req, res) => { res.sendStatus(405) })
 
+/**
+ * GET /users/:username
+ * 
+ * Fetch a single user from the database.
+ * 200 if found
+ * 404 if not
+ * 500 for all errors
+ */
 router.get("/:username", async (req, res) => {
   const { username } = req.params;
   console.debug(`GET /users/${username}`)
@@ -31,6 +43,14 @@ router.get("/:username", async (req, res) => {
     });
 })
 
+/**
+ * POST /users
+ * 
+ * Create a new user
+ * 201 if created
+ * 400 if already exists
+ * 500 for all errors
+ */
 router.post("/", async (req, res) => {
   console.debug(`POST /users`);
   const { username, passwdHash, email, firstName, lastName, linkedRxs, linkedReminders } = req.body;
@@ -48,6 +68,14 @@ router.post("/", async (req, res) => {
     })
 })
 
+/**
+ * PATCH /users/:username
+ * 
+ * Update a user in the database. ID and username are not modifiable.
+ * 200 if OK
+ * 404 if user not exists
+ * 500 for all errors
+ */
 router.patch("/:username", async (req, res) => {
   const { username } = req.params;
   const { passwdHash, email, firstName, lastName, linkedReminders, linkedRxs } = req.body;
@@ -83,6 +111,13 @@ router.patch("/:username", async (req, res) => {
     })
 })
 
+/**
+ * DELETE /users/:username
+ * 
+ * Delete a user from the database
+ * 204 if deleted (or not, results doesn't have ability to show if not deleted)
+ * 500 for all errors
+ */
 router.delete("/:username", async (req, res) => {
   const { username } = req.params;
   console.debug(`DELETE /users/${username}`)
