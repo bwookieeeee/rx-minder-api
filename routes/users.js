@@ -55,7 +55,7 @@ router.post("/", async (req, res) => {
   console.debug(`POST /users`);
   const { username, passwd, email, firstName, lastName, linkedRxs, linkedReminders } = req.body;
   const bcrypt = require("bcrypt");
-  const passwdHash = bcrypt.hash(passwd, 10, async (err, hash) => {
+  bcrypt.hash(passwd, 10, async (err, hash) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);
