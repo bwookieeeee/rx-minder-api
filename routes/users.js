@@ -53,19 +53,27 @@ router.get("/:username", async (req, res) => {
  */
 router.post("/", async (req, res) => {
   console.debug(`POST /users`);
-  const { username, passwdHash, email, firstName, lastName, linkedRxs, linkedReminders } = req.body;
-  await pool.query("INSERT INTO users (id, username, passwdHash, apiKey, email, firstName, lastName, linkedRxs, linkedReminders) values ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
-    [uuid.v4(), username, passwdHash, uuid.v4(), email, firstName, lastName, linkedRxs, linkedReminders])
-    .then(results => {
-      res.status(201).send(results.rows[0]);
-    }).catch(err => {
-      if (err.code === "23505") {
-        res.status(400).send({ error: "User already exists" });
-      } else {
-        console.error(err);
-        res.sendStatus(500);
-      }
-    })
+  const { username, passwd, email, firstName, lastName, linkedRxs, linkedReminders } = req.body;
+  const bcrypt = require("bcrypt");
+  const passwdHash = bcrypt.hash(passwd, 10, async (err, hash) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+    } else {
+      await pool.query("INSERT INTO users (id, username, passwdHash, apiKey, email, firstName, lastName, linkedRxs, linkedReminders) values ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
+        [uuid.v4(), username, hash, uuid.v4(), email, firstName, lastName, linkedRxs, linkedReminders])
+        .then(results => {
+          res.status(201).send(results.rows[0]);
+        }).catch(err => {
+          if (err.code === "23505") {
+            res.status(400).send({ error: "User already exists" });
+          } else {
+            console.error(err);
+            res.sendStatus(500);
+          }
+        })
+    }
+  })
 })
 
 /**
