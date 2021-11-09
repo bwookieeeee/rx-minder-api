@@ -1,13 +1,14 @@
 const express = require("express");
 const passport = require("passport-local");
+const settings = require("./settings");
 
 
 const app = express();
 
 app.use(express.json());
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://brookebot.xyz");
-  res.header("Access-Control-Allow-Headers", "*");
+  res.header("Access-Control-Allow-Origin", settings.api.corsAllowOrigin);
+  res.header("Access-Control-Allow-Headers", settings.api.corsAllowHeaders);
   next();
 })
 
@@ -30,12 +31,12 @@ app.get("/login", async (req, res) => {
       if (err) {
         console.error(err);
         res.status(401).send({ error: "invalid username or password" });
-      } else {
+      } else if (result) {
         res.status(200).send(query.rows[0]);
-      }
+      } 
     })
   } catch (err) {
-    res.sendStatus(401);
+    res.sendStatus(500);
   }
 })
 
@@ -43,4 +44,10 @@ app.use("/users", require("./routes/users"));
 app.use("/scrips", require("./routes/scrips"));
 app.use("/reminders", require("./routes/reminders"));
 
-app.listen(3000);
+const server = app.listen({ port: settings.api.port} );
+
+// node odesn't release the port on close and that's annoying
+process.on("SIGINT", () => {
+  server.close();
+  process.exit(0);
+})
