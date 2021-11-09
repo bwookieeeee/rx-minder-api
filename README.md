@@ -1,5 +1,7 @@
 # Rx Reminder API
 
+*accurate as of v1.1.1*
+
 -----
 ## Data Structure
 
